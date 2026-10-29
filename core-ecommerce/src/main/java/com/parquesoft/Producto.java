@@ -101,6 +101,13 @@ public class Producto implements Vendible {
         this.nombre = nombre;
     }
 
+    // Crear una copia del producto con la cantidad específica para el carrito
+    public Producto copiarProducto(int cantidad) {
+        Producto copia = new Producto(this.nombre, this.precio, this.stock, this.categoria);
+        copia.setCantidadVenta(cantidad);
+        return copia;
+    }
+
     @Override
     public String toString() {
         return nombre + " - $" + String.format("%.2f", precio) + " (Stock: " + stock + ")";

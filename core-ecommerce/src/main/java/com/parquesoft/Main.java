@@ -260,15 +260,16 @@ public class Main {
                                 break;
                             }
 
-                            productoSeleccionado.setCantidadVenta(cantidad);
-                            carrito.add(productoSeleccionado);
-                            totalVenta += productoSeleccionado.calcularPrecioVenta();
+                            // Crear una copia del producto con la cantidad específica
+                            Producto productoCopia = productoSeleccionado.copiarProducto(cantidad);
+                            carrito.add(productoCopia);
+                            totalVenta += productoCopia.calcularPrecioVenta();
 
-                            logger.info("Producto agregado al carrito: " + productoSeleccionado.obtenerNombre() + 
-                                       " x" + cantidad + " = $" + String.format("%.2f", productoSeleccionado.calcularPrecioVenta()));
+                            logger.info("Producto agregado al carrito: " + productoCopia.obtenerNombre() + 
+                                       " x" + cantidad + " = $" + String.format("%.2f", productoCopia.calcularPrecioVenta()));
 
-                            System.out.println("\n✅ Producto agregado al carrito: " + productoSeleccionado.obtenerNombre() + " x" + cantidad);
-                            System.out.println("   Subtotal: $" + String.format("%.2f", productoSeleccionado.calcularPrecioVenta()));
+                            System.out.println("\n✅ Producto agregado al carrito: " + productoCopia.obtenerNombre() + " x" + cantidad);
+                            System.out.println("   Subtotal: $" + String.format("%.2f", productoCopia.calcularPrecioVenta()));
 
                             System.out.print("\n¿Deseas agregar otro producto? (si/no): ");
                             String respuesta = scanner.nextLine().trim().toLowerCase();
