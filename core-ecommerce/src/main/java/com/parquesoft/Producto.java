@@ -16,19 +16,19 @@ public class Producto implements Vendible {
 
     // Arreglos de Productos por Categoría
     public static final Producto[] PRODUCTOS_COMPUTO = {
-        new Producto("Laptop Dell i7", 899.99, 10, Categoria.EQUIPOS_COMPUTO),
-        new Producto("PC Gamer ASUS", 2499.99, 10, Categoria.EQUIPOS_COMPUTO),
-        new Producto("Monitor LG 27\"", 399.99, 10, Categoria.EQUIPOS_COMPUTO),
-        new Producto("Teclado Mecanico RGB", 149.99, 10, Categoria.EQUIPOS_COMPUTO),
-        new Producto("Mouse Logitech MX", 99.99, 10, Categoria.EQUIPOS_COMPUTO)
+        new Producto("Laptop Dell i7", 2000000.00, 10, Categoria.EQUIPOS_COMPUTO),
+        new Producto("PC Gamer ASUS", 5000000.00, 10, Categoria.EQUIPOS_COMPUTO),
+        new Producto("Monitor LG 27\"", 1200000.00, 10, Categoria.EQUIPOS_COMPUTO),
+        new Producto("Teclado Mecanico RGB", 450000.00, 10, Categoria.EQUIPOS_COMPUTO),
+        new Producto("Mouse Logitech MX", 250000.00, 10, Categoria.EQUIPOS_COMPUTO)
     };
 
     public static final Producto[] PRODUCTOS_RED = {
-        new Producto("Router TP-Link WiFi 6", 179.99, 10, Categoria.EQUIPOS_RED),
-        new Producto("Switch Cisco 24 puertos", 599.99, 10, Categoria.EQUIPOS_RED),
-        new Producto("Modem NETGEAR", 149.99, 10, Categoria.EQUIPOS_RED),
-        new Producto("Cable Ethernet Cat6", 19.99, 10, Categoria.EQUIPOS_RED),
-        new Producto("Access Point Ubiquiti", 299.99, 10, Categoria.EQUIPOS_RED)
+        new Producto("Router TP-Link WiFi 6", 700000.00, 10, Categoria.EQUIPOS_RED),
+        new Producto("Switch Cisco 24 puertos", 2500000.00, 10, Categoria.EQUIPOS_RED),
+        new Producto("Modem NETGEAR", 600000.00, 10, Categoria.EQUIPOS_RED),
+        new Producto("Cable Ethernet Cat6", 80000.00, 10, Categoria.EQUIPOS_RED),
+        new Producto("Access Point Ubiquiti", 1200000.00, 10, Categoria.EQUIPOS_RED)
     };
 
     @Override
