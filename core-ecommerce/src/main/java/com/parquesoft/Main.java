@@ -314,8 +314,11 @@ public class Main {
             System.out.println("╚════════════════════════════════════════════════╝");
 
             for (Producto producto : carrito) {
-                System.out.println("• " + producto.obtenerNombre() + " x" + producto.seleccionarCantidad() +
-                                 " = $" + String.format("%.2f", producto.calcularPrecioVenta()));
+                int cantidad = producto.seleccionarCantidad();
+                double precioUnitario = producto.obtenerPrecio();
+                double totalProducto = producto.calcularPrecioVenta();
+                System.out.println("• " + producto.obtenerNombre() + ": $" + String.format("%.2f", precioUnitario) + 
+                                 " × " + cantidad + " = $" + String.format("%.2f", totalProducto));
             }
 
             System.out.println("══════════════════════════════════════════════");
