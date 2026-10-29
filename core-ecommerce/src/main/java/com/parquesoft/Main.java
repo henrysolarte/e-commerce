@@ -355,15 +355,19 @@ public class Main {
         try {
             System.out.println("\n⏳ Procesando compra...");
 
+            int cantidadTotalUnidades = 0;
             for (Producto producto : carrito) {
-                producto.disminuirStock(producto.seleccionarCantidad());
+                int cantidad = producto.seleccionarCantidad();
+                producto.disminuirStock(cantidad);
+                cantidadTotalUnidades += cantidad;
             }
 
             logger.info("COMPRA REALIZADA: Total = $" + String.format("%.2f", totalVenta) + 
-                       ". Cantidad de productos: " + carrito.size());
+                       ". Unidades compradas: " + cantidadTotalUnidades + ". Tipos de productos: " + carrito.size());
 
             System.out.println("\n✅ ¡COMPRA REALIZADA CON ÉXITO!");
             System.out.println("══════════════════════════════════════════════");
+            System.out.println("Unidades compradas: " + cantidadTotalUnidades);
             System.out.println("Monto pagado: $" + String.format("%.2f", totalVenta));
             System.out.println("══════════════════════════════════════════════");
             System.out.println("\n🎉 Gracias por comprar en SOFTHENRY.\n");
