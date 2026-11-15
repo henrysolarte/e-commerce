@@ -12,6 +12,10 @@ import { CheckoutModal } from './components/checkout/CheckoutModal';
 import { OrderSuccessModal } from './components/checkout/OrderSuccessModal';
 import { OrderHistoryModal } from './components/orders/OrderHistoryModal';
 
+// Import Clemmens Theme CSS
+import './styles/clemmens-theme.css';
+import './styles/vendor.css';
+
 /**
  * Shell Principal de la Aplicación E-Commerce.
  * Orquesta la navegación de pestañas y encapsula los modales de la pasarela de compra.
