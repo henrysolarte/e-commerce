@@ -18,6 +18,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     List<ProductEntity> findByIsActiveTrue();
 
+    List<ProductEntity> findByCategory_NameAndIsActiveTrue(String categoryName);
+
     // Consulta JPQL: Busqueda por rango de precios
     @Query("SELECT p FROM ProductEntity p WHERE p.price BETWEEN :min AND :max AND p.isActive = true ORDER BY p.price ASC")
     List<ProductEntity> searchByPriceRange(@Param("min") double min, @Param("max") double max);
