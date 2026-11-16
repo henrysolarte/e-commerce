@@ -58,7 +58,7 @@ public class AuthService {
         }
 
         UserEntity userEntity = new UserEntity(
-                request.getUsername().trim(),
+                request.getName().trim(),
                 email,
                 passwordEncoder.encode(request.getPassword()),
                 request.getRole()
@@ -66,14 +66,7 @@ public class AuthService {
 
         userRepository.save(userEntity);
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, request.getPassword())
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String token = tokenProvider.generateToken(authentication);
-
-        return new AuthResponse(token, "Bearer", userEntity.getEmail(), userEntity.getFullName(), userEntity.getRole());
+        // Retornar respuesta sin token (más seguro y evita deadlock)
+        return new AuthResponse("", "Bearer", userEntity.getEmail(), userEntity.getFullName(), userEntity.getRole());
     }
 }

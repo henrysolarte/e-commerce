@@ -1,8 +1,12 @@
 package com.parquesoft.ecommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RegisterRequest {
 
-    private String username;
+    @JsonProperty("name")
+    private String name;
+    
     private String email;
     private String password;
     private String role;
@@ -10,12 +14,12 @@ public class RegisterRequest {
     public RegisterRequest() {
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {

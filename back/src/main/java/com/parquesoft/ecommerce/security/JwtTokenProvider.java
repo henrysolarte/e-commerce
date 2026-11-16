@@ -47,6 +47,25 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // Sobrecarga para generar token con email y rol por defecto
+    public String generateToken(String email) {
+        return generateToken(email, "ROLE_USER");
+    }
+
+    // Sobrecarga para generar token con email y rol específico
+    public String generateToken(String email, String role) {
+        Date currentDate = new Date();
+        Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("roles", role)
+                .setIssuedAt(currentDate)
+                .setExpiration(expireDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
