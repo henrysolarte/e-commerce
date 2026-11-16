@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ecommerce-backend
+    runtime: java
+    runtimeVersion: 25
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar target/ecommerce-0.0.1-SNAPSHOT.jar"
+    envVars:
+      - key: DATABASE_URL
+        scope: build
+      - key: DATABASE_URL
+        scope: runtime
+      - key: PORT
+        value: 8081
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
