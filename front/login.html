@@ -36,7 +36,7 @@
             <button type="button" class="btn btn-outline-primary w-100 mt-2" onclick="window.location.href='register.html'">Regístrate</button>
 
             <p class="text-muted small mt-3">
-              Demo: <code>admin@demo.com / Admin123!</code>
+              Demo: <code><a href="auto-login.html" style="color: #800080;">admin@demo.com / Admin123!</a></code>
             </p>
           </div>
         </div>
@@ -46,5 +46,21 @@
 
   <!-- Script centralizado de autenticación -->
   <script src="js/auth.js"></script>
+  <script>
+    // Garantizar que attachLoginHandler se ejecute después de que auth.js se cargue completamente
+    function ensureLoginHandler() {
+      if (typeof attachLoginHandler === 'function') {
+        attachLoginHandler();
+      } else {
+        setTimeout(ensureLoginHandler, 100);
+      }
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ensureLoginHandler);
+    } else {
+      ensureLoginHandler();
+    }
+  </script>
 </body>
 </html>

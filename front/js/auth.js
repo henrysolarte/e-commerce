@@ -10,7 +10,7 @@ const SESSION_KEY = "app.jwt";
 const authIsProd = location.hostname.endsWith("onrender.com");
 const AUTH_API_URL = authIsProd
   ? "https://perfumeriaclemenss.onrender.com/api"
-  : (window.__API_URL__ || "http://localhost:8081");
+  : (window.__API_URL__ || "http://localhost:8081/api");
 
 // ----------------- Helpers de sesión -----------------
 function setSession(user) {
@@ -114,9 +114,14 @@ function attachLoginHandler() {
     setLoading(submitBtn, true);
     try {
       const data = await apiLogin(email, password, inFlight.signal);
-      if (data?.user) {
-        setSession({ user: data.user });
-      }
+      // El backend retorna directamente el usuario, no anidado
+      const user = {
+        name: data.fullName || data.email,
+        email: data.email,
+        token: data.token,
+        role: data.role
+      };
+      setSession({ user });
       borrarCarritoLocal();
       window.location.assign(redirectTo);
     } catch (err) {
@@ -217,7 +222,7 @@ function updateAuthUI() {
 }
 
 // Exponer helpers y auto-inicializar
-window.Auth = { requireAuth, logout, getSession, updateAuthUI };
+window.Auth = { requireAuth, logout, getSession, updateAuthUI, apiLogin };
 
 document.addEventListener("DOMContentLoaded", () => {
   attachLoginHandler();

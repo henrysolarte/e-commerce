@@ -84,4 +84,17 @@ public class ProductService {
         }
         return price - (price * (percentage / 100));
     }
+
+    @Transactional
+    public ProductEntity reduceStock(Long id, Integer quantity) {
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        
+        if (product.getStock() < quantity) {
+            throw new IllegalArgumentException("Stock insuficiente. Disponible: " + product.getStock() + ", Solicitado: " + quantity);
+        }
+        
+        product.setStock(product.getStock() - quantity);
+        return productRepository.save(product);
+    }
 }

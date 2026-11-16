@@ -32,8 +32,8 @@ async function cargarStockDesdeBackend() {
     try {
         const res = await fetch(`${CARRITO_API_URL}/products`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = Array.isArray(data) ? data : [];
-        const productos = data;
+        const data = await res.json();
+        const productos = Array.isArray(data) ? data : [];
 
         stockCache.byId.clear();
         stockCache.byName.clear();

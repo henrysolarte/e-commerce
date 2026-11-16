@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Auto Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="alert alert-info">Attempting automatic login...</div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function autoLogin() {
+      const resultDiv = document.getElementById('result');
+      
+      try {
+        const response = await fetch('http://localhost:8081/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: 'admin@demo.com', 
+            password: 'Admin123!' 
+          })
+        });
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (data.token) {
+          // Guardar sesión
+          localStorage.setItem('app.jwt', JSON.stringify({ 
+            user: {
+              name: data.fullName,
+              email: data.email,
+              token: data.token,
+              role: data.role
+            }
+          }));
+          
+          resultDiv.innerHTML = `
+            <div class="alert alert-success">
+              ✅ Login successful!<br>
+              Redirecting to home...
+            </div>
+          `;
+          
+          // Redirigir
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${err.message}</div>`;
+      }
+    }
+    
+    // Auto-ejecutar al cargar
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', autoLogin);
+    } else {
+      autoLogin();
+    }
+  </script>
+</body>
+</html>

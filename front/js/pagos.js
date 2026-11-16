@@ -1,7 +1,7 @@
 const pagosIsProd = location.hostname.endsWith("onrender.com");
 const PAGOS_API_URL = pagosIsProd
     ? "https://perfumeriaclemenss.onrender.com/api"
-    : (window.__API_URL__ || "http://localhost:8081");
+    : (window.__API_URL__ || "http://localhost:8081/api");
 
 document.addEventListener("DOMContentLoaded", function() {
     // Mostrar producto seleccionado desde el carrito
@@ -108,15 +108,50 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function confirmarCompraEnBackend(carrito) {
         const items = carrito.map((p) => ({
-            productoId: p.productoId,
-            nombre: p.nombre,
-            cantidad: Number(p.cantidad) || 1,
+            productId: p.productoId,
+            quantity: Number(p.cantidad) || 1,
+            unitPrice: Number(p.precio) || 0
         }));
 
-        const res = await fetch(`${PAGOS_API_URL}/checkout`, {
+        // Calcular totales
+        const subtotal = carrito.reduce((sum, p) => sum + (Number(p.precio) || 0) * (Number(p.cantidad) || 1), 0);
+        const iva = subtotal * 0.19; // IVA del 19%
+        const totalAmount = subtotal + iva;
+
+        // Obtener datos de la tarjeta del formulario
+        const nombreTarjeta = document.getElementById("nombre").value;
+        const numeroTarjeta = document.getElementById("numero").value.replace(/\s/g, "");
+        const fechaExpiracion = document.getElementById("fecha-expiracion").value;
+        const codigoSeguridad = document.getElementById("codigo-seguridad").value;
+
+        // Obtener el token JWT del localStorage
+        const session = JSON.parse(localStorage.getItem("app.jwt") || "{}");
+        const token = session.user?.token || "";
+
+        const headers = {
+            "Content-Type": "application/json"
+        };
+        
+        // Agregar el token si existe
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        const payload = {
+            items: items,
+            subtotal: subtotal,
+            iva: iva,
+            totalAmount: totalAmount,
+            cardName: nombreTarjeta,
+            cardNumber: numeroTarjeta,
+            cardExpiry: fechaExpiracion,
+            cardCVV: codigoSeguridad
+        };
+
+        const res = await fetch(`${PAGOS_API_URL}/orders/create`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items }),
+            headers: headers,
+            body: JSON.stringify(payload),
         });
 
         let data = null;
@@ -132,42 +167,68 @@ document.addEventListener("DOMContentLoaded", function() {
                     .join("\n");
                 throw new Error(`Stock insuficiente:\n${detalle}`);
             }
-            throw new Error(data?.error || "No se pudo confirmar el pago.");
+            throw new Error(data?.error || data?.message || "No se pudo confirmar el pago.");
         }
     }
 
     let ordenNumero = document.getElementById("pago__orden");
-    const botonpagos = document.getElementById("pagos__boton");
-    botonpagos.addEventListener("click", async function(e) {
+    const botonPagarAnterior = document.getElementById("pagos__boton");
+    const botonConfirmar = document.getElementById("pagos__boton-confirmar");
+    
+    botonConfirmar.addEventListener("click", async function(e) {
         e.preventDefault();
-        if (numeroTarjeta.value === "" || nombreTarjeta.value === "" || fechaExpiracion.value === "" || cvv.value === "") {
-            alert("Por favor, complete todos los campos del formulario.");
-            return;
-        }
-
+        
+        // Validar que el carrito no esté vacío
         const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
         if (carrito.length === 0) {
-            alert("Tu carrito esta vacio.");
+            alert("Tu carrito está vacío.");
             return;
         }
 
         const formulario = document.getElementById("pagos__formulario");
         const confirmacion = document.getElementById("pagos__confirmacion");
-        botonpagos.disabled = true;
-        botonpagos.textContent = "Procesando...";
+        botonConfirmar.disabled = true;
+        botonConfirmar.textContent = "Procesando...";
+
+        // Simular procesamiento (500ms)
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         try {
+            // Confirmar la compra en el backend (crear orden y descontar stock automáticamente)
             await confirmarCompraEnBackend(carrito);
-            const orden = guardarOrden(carrito);
-            // Vacía el carrito después de pagar
+            
+            // Generar número de aprobación aleatorio
+            const numeroAprobacion = Math.floor(100000 + Math.random() * 900000);
+            
+            // Vaciar el carrito
             localStorage.removeItem("carrito");
+            
+            // Mostrar confirmación
             formulario.style.display = "none";
             confirmacion.style.display = "block";
-            ordenNumero.textContent = "Número de orden: " + orden + "\nTotal pagado: $" + (window.totalPago ? window.totalPago.toLocaleString() : "0");
+            
+            // Mostrar número de transacción
+            ordenNumero.innerHTML = `
+                <div style="font-size:20px;font-weight:bold;margin-bottom:20px;color:#FFD700;">Número de Transacción Aprobada:</div>
+                <div style="font-size:36px;font-weight:bold;margin-bottom:30px;color:#90EE90;letter-spacing:2px;">${numeroAprobacion}</div>
+                <div style="font-size:16px;margin-bottom:40px;color:#E0E0E0;">Total pagado: $${window.totalPago ? window.totalPago.toLocaleString() : "0"}</div>
+                <div style="font-size:14px;color:#FFD700;animation:blink 1.5s infinite;">Redirigiendo al menú principal en 5 segundos...</div>
+            `;
+            
+            // Redirigir después de 5 segundos
+            setTimeout(function() {
+                window.location.href = "index.html";
+            }, 5000);
         } catch (err) {
-            alert(err.message || "No se pudo confirmar el pago.");
-            botonpagos.disabled = false;
-            botonpagos.textContent = "Pagar";
+            alert(err.message || "Error al procesar el pago.");
+            botonConfirmar.disabled = false;
+            botonConfirmar.textContent = "Oprime para Pagar";
         }
+    });
+
+    // Mantener el evento del botón anterior por compatibilidad (aunque está oculto)
+    botonPagarAnterior.addEventListener("click", async function(e) {
+        e.preventDefault();
+        // No hacer nada - solo está para compatibilidad
     })
 });

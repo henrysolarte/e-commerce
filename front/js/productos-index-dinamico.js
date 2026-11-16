@@ -9,21 +9,22 @@ function renderizarProductosPorCategoria(categoria, contenedorId) {
   contenedor.innerHTML = productosFiltrados.map((producto, index) => {
     // Usamos el índice global del array de `window.productos` para mantener la consistencia
     const productoIndex = window.productos.findIndex(p => p.nombre === producto.nombre);
+    // Escapar comillas en el nombre del producto para el onclick
+    const nombreEscapado = producto.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     return `
         <div class="col">
           <div class="product-item">
             <figure>
-              <a href="#" title="${producto.nombre}">
+              <a href="#" title="${producto.nombre}" onclick="event.preventDefault();showProductModal('${nombreEscapado}')">
                 <img src="${producto.imagen}" alt="${producto.nombre}" class="tab-image" data-index="${productoIndex}">
               </a>
             </figure>
             <div class="d-flex flex-column text-center">
-              <h3 class="fs-6 fw-normal">${producto.nombre}</h3>
+              <h3 class="fs-6 fw-normal" style="cursor:pointer;" onclick="event.preventDefault();showProductModal('${nombreEscapado}')">${producto.nombre}</h3>
               <div class="mb-2">
-                <span class="rating">
-                  ${'<svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>'.repeat(Math.floor(producto.rating))}${(producto.rating % 1 ? '<svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>' : '')}
+                <span class="stock-info" style="font-weight: 600; font-size: 1rem; color: #2c3e50;">
+                  Stock: ${producto.stock}
                 </span>
-                <span>(${producto.reviews})</span>
               </div>
               <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
                 <del>$${producto.precioOriginal.toLocaleString()}</del>
@@ -31,15 +32,9 @@ function renderizarProductosPorCategoria(categoria, contenedorId) {
                 <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">${producto.descuento}</span>
               </div>
               <div class="button-area p-3 pt-0">
-                <div class="row g-1 mt-2">
-                  <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6" data-index="${productoIndex}"><svg width="18" height="18"><use xlink:href='#heart'></use></svg></a></div>
-                  <div class="col-7">
-                    <button type="button" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" data-index="${productoIndex}" ${producto.stock <= 0 ? 'disabled' : ''}>
-                      <svg width="18" height="18"><use xlink:href='#cart'></use></svg> ${producto.stock <= 0 ? 'Sin stock' : 'Add to Cart'}
-                    </button>
-                  </div>
-                  <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6" data-index="${productoIndex}"><svg width="18" height="18"><use xlink:href='#heart'></use></svg></a></div>
-                </div>
+                <button type="button" class="btn-add-to-cart" data-index="${productoIndex}" ${producto.stock <= 0 ? 'disabled' : ''}" style="width:100%;padding:12px 20px;font-weight:600;font-size:1rem;background-color:#4CAF50;color:white;border:none;border-radius:12px;cursor:pointer;transition:background-color 0.3s ease;font-family:Arial,sans-serif;">
+                  Agregar al carrito
+                </button>
               </div>
             </div>
           </div>
@@ -81,11 +76,28 @@ document.addEventListener('DOMContentLoaded', async function() {
   renderizarProductosPorCategoria('Para él', 'product-grid-el');
   renderizarMasVendidos('mas-vendidos-wrapper', 12); // Cargar los 12 más vendidos
 
-  // Delegación de eventos para botones "Add to Cart"
+  // Agregar estilos hover a los botones
+  const style = document.createElement('style');
+  style.textContent = `
+    .btn-add-to-cart:hover:not(:disabled) {
+      background-color: #45a049 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .btn-add-to-cart:disabled {
+      background-color: #cccccc !important;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Delegación de eventos para botones "Agregar al carrito"
   document.body.addEventListener('click', function(e) {
-    if (e.target.closest('.btn-cart')) {
+    // Manejar botón "Agregar al carrito"
+    if (e.target.closest('.btn-add-to-cart')) {
       e.preventDefault();
-      const button = e.target.closest('.btn-cart');
+      const button = e.target.closest('.btn-add-to-cart');
       const productoIndex = button.dataset.index;
       const producto = window.productos[productoIndex];
 
@@ -93,7 +105,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (producto.stock <= 0) {
           alert('Producto sin stock.');
           button.disabled = true;
-          button.textContent = 'Sin stock';
           return;
         }
         if (!usuarioLogueado()) {
@@ -102,24 +113,20 @@ document.addEventListener('DOMContentLoaded', async function() {
           return;
         }
 
-        const card = button.closest('.product-item');
-        const cantidadInput = card.querySelector('input.quantity');
-        const cantidad = cantidadInput ? parseInt(cantidadInput.value, 10) || 1 : 1;
-
-        if (producto.stock < cantidad) {
-          alert('No hay suficiente stock disponible.');
-          return;
-        }
-
         agregarAlCarrito({
           productoId: producto.productoId,
           nombre: producto.nombre,
           precio: producto.precio,
           imagen: producto.imagen,
-          cantidad: cantidad
+          cantidad: 1
         });
-        // Rebajar stock solo en memoria para la sesion actual.
-        producto.stock -= cantidad;
+        
+        // Rebajar stock
+        producto.stock -= 1;
+        
+        // Mostrar alerta
+        alert(`✓ ${producto.nombre} agregado al carrito!`);
+        
         // Actualizar botón si stock llega a 0
         if (producto.stock <= 0) {
           button.disabled = true;

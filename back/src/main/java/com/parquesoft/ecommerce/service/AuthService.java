@@ -66,7 +66,13 @@ public class AuthService {
 
         userRepository.save(userEntity);
 
-        // Retornar respuesta sin token (más seguro y evita deadlock)
-        return new AuthResponse("", "Bearer", userEntity.getEmail(), userEntity.getFullName(), userEntity.getRole());
+        // Generar token después del registro
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, request.getPassword())
+        );
+
+        String token = tokenProvider.generateToken(authentication);
+
+        return new AuthResponse(token, "Bearer", userEntity.getEmail(), userEntity.getFullName(), userEntity.getRole());
     }
 }

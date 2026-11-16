@@ -1,10 +1,10 @@
 // productos.js
-// Adaptado para conectar con backend Spring Boot E-Commerce
+// Lista de perfumes Clemenss para mostrar en productos.html
 
 const productosIsProd = location.hostname.endsWith("onrender.com");
 const PRODUCTOS_API_URL = productosIsProd
-  ? "https://api-ecommerce.onrender.com"
-  : (window.__API_URL__ || "http://localhost:8081");
+  ? "https://perfumeriaclemenss.onrender.com/api"
+  : (window.__API_URL__ || "http://localhost:8081/api");
 
 window.productos = [
   {
@@ -143,7 +143,7 @@ window.productos = [
   {
     nombre: "Le Male Elixir",
     precio: 400000,
-    imagen: "images/perfume_232x210.png",
+    imagen: "images/product-thumb-12.png",
     categoria: "Para él",
     descuento: "10% OFF",
     precioOriginal: 500000,
@@ -153,9 +153,9 @@ window.productos = [
     stock: 10
   },
   {
-    nombre: "bleu de chanel",
+    nombre: "Bleu de Chanel",
     precio: 1000000,
-    imagen: "images/product-thumb-11.png",
+    imagen: "images/product-thumb-13.png",
     categoria: "Para él",
     descuento: "15% OFF",
     precioOriginal: 650000,
@@ -165,9 +165,9 @@ window.productos = [
     stock: 10
   },
   {
-    nombre: "One Millon",
+    nombre: "One Million",
     precio: 480000,
-    imagen: "images/product-thumb-12.png",
+    imagen: "images/product-thumb-14.png",
     categoria: "Para él",
     descuento: "20% OFF",
     precioOriginal: 680000,
@@ -281,56 +281,54 @@ function nombreCanonicoProducto(nombre) {
 
 async function syncProductosConBackend() {
   try {
-    console.log('🔄 Sincronizando productos desde backend en:', `${PRODUCTOS_API_URL}/api/products`);
-    
-    const res = await fetch(`${PRODUCTOS_API_URL}/api/products`, { 
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      cache: "no-store" 
-    });
-    
-    if (!res.ok) {
-      console.warn(`⚠️ HTTP ${res.status}: No se pudo conectar al backend`);
-      return false;
-    }
+    const res = await fetch(`${PRODUCTOS_API_URL}/products`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const productosDb = await res.json();
-    console.log('✅ Productos obtenidos del backend:', productosDb);
-    
-    // Si no hay datos, usar fallback
-    if (!productosDb || productosDb.length === 0) {
-      console.warn('⚠️ Backend retornó datos vacíos, usando fallback');
-      return false;
-    }
+    const data = await res.json();
+    const productosDb = Array.isArray(data) ? data : [];
+    const fallbackByName = new Map(
+      window.productos.map((p) => [nombreCanonicoProducto(p.nombre), p])
+    );
 
-    // Mapear productos de la BD PostgreSQL al formato de Clemmens
+    const mapCategoriaDb = (categoriaDb) => {
+      if (!categoriaDb) return "Para ella";
+      // Si la categoría ya es "Para ella" o "Para él", devolvamos directo
+      if (categoriaDb === "Para ella") return "Para ella";
+      if (categoriaDb === "Para él") return "Para él";
+      
+      const c = normalizarNombreProducto(categoriaDb);
+      // Si después de normalizar contiene "ella", es para ella
+      if (c.includes("ella")) return "Para ella";
+      // Si después de normalizar contiene "el" o "hombre", es para él
+      if (c.includes("hombre") || (c.includes("el") && !c.includes("ella"))) return "Para él";
+      return "Para ella"; // Default
+    };
+
     window.productos = productosDb.map((db) => {
-      const precio = Number(db.price) || 0;
-      const precioOriginal = Math.round(precio * 1.15);
+      const canon = nombreCanonicoProducto(db.nombre);
+      const fallback = fallbackByName.get(canon) || {};
+      const precio = Number(db.precio) || Number(fallback.precio) || 0;
+      const descuento = fallback.descuento || "10% OFF";
+      const precioOriginal = Number(fallback.precioOriginal) || Math.round(precio * 1.2);
 
       return {
         productoId: Number(db.id),
-        nombre: db.name || "Producto",
-        precio: precio,
-        imagen: "images/perfume_232x210.png", // Fallback: sin imágenes en BD
-        categoria: db.category?.name || "Tecnología",
-        descuento: "10% OFF",
-        precioOriginal: precioOriginal,
-        rating: 4.5,
-        reviews: 100,
-        descripcion: "",
+        nombre: db.nombre || fallback.nombre || "Producto",
+        precio,
+        imagen: db.imagen || fallback.imagen || "images/perfume_232x210.png",
+        categoria: mapCategoriaDb(db.categoria),
+        descuento,
+        precioOriginal: Math.max(precio, precioOriginal),
+        rating: Number(fallback.rating) || 4.5,
+        reviews: Number(fallback.reviews) || 100,
+        descripcion: db.descripcion || fallback.descripcion || "",
         stock: Math.max(0, Number(db.stock) || 0),
-        sku: db.sku || ""
       };
     });
 
-    console.log('✅ Productos mapeados correctamente:', window.productos.length);
     return true;
   } catch (err) {
-    console.error('❌ Error conectando con backend:', err?.message || err);
+    console.warn("No se pudo sincronizar productos desde backend:", err?.message || err);
     return false;
   }
 }
@@ -348,6 +346,11 @@ function renderProductos() {
   productos.forEach((producto, idx) => {
     const card = document.createElement('div');
     card.className = 'col';
+    const hayStock = producto.stock > 0;
+    const textoStock = hayStock ? `Stock ${producto.stock}` : 'Sin stock';
+    const clasBoton = hayStock ? 'btn-primary' : 'btn-secondary disabled';
+    const textBoton = hayStock ? '<svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart' : 'Sin stock';
+    
     card.innerHTML = `
       <div class="product-item card h-100 p-3">
         <figure class="text-center">
@@ -367,12 +370,15 @@ function renderProductos() {
             <span class="text-dark fw-semibold">$${producto.precio.toLocaleString()}</span>
             <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">${producto.descuento}</span>
           </div>
+          <div class="mb-2">
+            <span class="badge ${hayStock ? 'bg-success' : 'bg-danger'} fs-7">${textoStock}</span>
+          </div>
           <div class="button-area p-3 pt-0">
             <div class="row g-1 mt-2">
               <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href='#heart'></use></svg></a></div>
               <div class="col-7">
-                <button type="button" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart" id="btn-cart-${idx}" data-idx="${idx}">
-                  <svg width="18" height="18"><use xlink:href='#cart'></use></svg> Add to Cart
+                <button type="button" class="btn ${clasBoton} rounded-1 p-2 fs-7 btn-cart" id="btn-cart-${idx}" data-idx="${idx}" ${!hayStock ? 'disabled' : ''}>
+                  ${textBoton}
                 </button>
               </div>
               <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href='#heart'></use></svg></a></div>
@@ -388,14 +394,29 @@ function renderProductos() {
   document.querySelectorAll('.btn-cart').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.preventDefault();
+      
+      const idx = this.getAttribute('data-idx');
+      const producto = productos[idx];
+      
+      // Validar que hay stock
+      if (producto.stock <= 0) {
+        alert(`Lo siento, "${producto.nombre}" no tiene stock disponible.`);
+        return;
+      }
+      
       if (!usuarioLogueado()) {
         alert('Debes iniciar sesión para agregar productos al carrito.');
         window.location.href = 'login.html';
         return;
       }
-      const idx = this.getAttribute('data-idx');
       const cantidad = parseInt(document.getElementById(`qty-prod-${idx}`).value) || 1;
-      const producto = productos[idx];
+      
+      // Validar que la cantidad no exceda el stock
+      if (cantidad > producto.stock) {
+        alert(`Solo hay ${producto.stock} unidades disponibles de "${producto.nombre}".`);
+        return;
+      }
+      
       console.log('Evento directo: Add to Cart clickeado:', producto.nombre);
       agregarAlCarrito({
         productoId: producto.productoId,
@@ -434,11 +455,4 @@ function usuarioLogueado() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  console.log('🚀 Página cargada, sincronizando productos...');
-  const sincronizado = await syncProductosConBackend();
-  if (!sincronizado) {
-    console.log('⚠️ Fallback a productos hardcodeados');
-  }
-  renderProductos();
-});
+document.addEventListener('DOMContentLoaded', renderProductos);

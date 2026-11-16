@@ -68,6 +68,11 @@ public class OrderService {
             ProductEntity product = productRepository.findById(itemRequest.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + itemRequest.getProductId()));
 
+            // Validar stock disponible
+            if (product.getStock() < itemRequest.getQuantity()) {
+                throw new IllegalArgumentException("Stock insuficiente para: " + product.getName());
+            }
+
             OrderItemEntity orderItem = new OrderItemEntity();
             orderItem.setOrder(order);
             orderItem.setProduct(product);
@@ -76,6 +81,11 @@ public class OrderService {
             orderItem.setTotalPrice(itemRequest.getUnitPrice().multiply(new BigDecimal(itemRequest.getQuantity())));
 
             orderItems.add(orderItem);
+            
+            // RESTAR STOCK del producto
+            int nuevoStock = product.getStock() - itemRequest.getQuantity();
+            product.setStock(nuevoStock);
+            productRepository.save(product);
         }
 
         order.setItems(orderItems);
