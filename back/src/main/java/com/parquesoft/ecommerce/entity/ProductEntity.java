@@ -25,6 +25,18 @@ public class ProductEntity {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
+    @Column(length = 500)
+    private String image;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column
+    private Double rating;
+
+    @Column
+    private Integer reviews;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
@@ -95,5 +107,37 @@ public class ProductEntity {
 
     public void setCategory(CategoryEntity category) {
         this.category = category;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Integer getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Integer reviews) {
+        this.reviews = reviews;
     }
 }

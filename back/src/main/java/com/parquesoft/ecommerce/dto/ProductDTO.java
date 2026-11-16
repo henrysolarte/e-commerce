@@ -10,6 +10,10 @@ public class ProductDTO {
     private Integer stock;
     private String categoryName;
     private Boolean isActive;
+    private String image;
+    private String description;
+    private Double rating;
+    private Integer reviews;
 
     public ProductDTO() {}
 
@@ -77,5 +81,37 @@ public class ProductDTO {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Integer getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Integer reviews) {
+        this.reviews = reviews;
     }
 }
