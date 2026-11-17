@@ -1,6 +1,7 @@
 #!/bin/sh
 # convert-database-url.sh
 # Converts Render's DATABASE_URL to Spring Boot JDBC properties
+# Falls back to default configuration if DATABASE_URL is not set
 
 echo "========================================"
 echo "=== DATABASE_URL Converter Started ==="
@@ -9,9 +10,10 @@ echo "PORT: ${PORT}"
 echo "SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}"
 echo "DATABASE_URL present: $([ -z "$DATABASE_URL" ] && echo 'NO' || echo 'YES')"
 
+# Default fallback configuration for local development
 SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ecommerce"
 SPRING_DATASOURCE_USERNAME="postgres"
-SPRING_DATASOURCE_PASSWORD="postgres"
+SPRING_DATASOURCE_PASSWORD="2973293428"
 
 if [ -n "$DATABASE_URL" ]; then
   echo ""
@@ -47,11 +49,21 @@ if [ -n "$DATABASE_URL" ]; then
   SPRING_DATASOURCE_USERNAME="$USERNAME"
   SPRING_DATASOURCE_PASSWORD="$PASSWORD"
   
-  echo "Database configuration:"
+  echo "Database configuration from DATABASE_URL:"
   echo "  Host: $HOST"
   echo "  Port: $PORT_DB"
   echo "  Database: $DB_NAME"
   echo "  Username: $USERNAME"
+  echo "  JDBC URL: $SPRING_DATASOURCE_URL"
+else
+  echo ""
+  echo "=== WARNING: DATABASE_URL not set ==="
+  echo "Using fallback configuration for local PostgreSQL"
+  echo "Database configuration:"
+  echo "  Host: localhost"
+  echo "  Port: 5432"
+  echo "  Database: ecommerce"
+  echo "  Username: postgres"
   echo "  JDBC URL: $SPRING_DATASOURCE_URL"
 fi
 
@@ -68,3 +80,4 @@ echo "SPRING_DATASOURCE_PASSWORD=(set)"
 echo ""
 echo "=== Starting Spring Boot application ==="
 echo "========================================"
+
