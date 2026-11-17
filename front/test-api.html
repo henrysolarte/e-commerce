@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API</title>
+</head>
+<body>
+    <h1>Test API Products</h1>
+    <div id="result"></div>
+    
+    <script>
+        // Test production backend
+        const apiUrl = 'https://e-commerce-fr3k.onrender.com/api/products';
+        
+        console.log('Fetching from:', apiUrl);
+        
+        fetch(apiUrl)
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data:', data);
+                document.getElementById('result').innerHTML = `
+                    <p>Success! Received ${data.length} products</p>
+                    <pre>${JSON.stringify(data.slice(0, 2), null, 2)}</pre>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            });
+    </script>
+</body>
+</html>
