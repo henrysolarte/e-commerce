@@ -67,7 +67,8 @@ public class SecurityConfig {
             "http://localhost:*",
             "http://127.0.0.1:*",
             "https://*.onrender.com",
-            "https://e-commerce-fr3k.onrender.com"
+            "https://e-commerce-fr3k.onrender.com",
+            "https://clemenss-perfumeria-frontend.onrender.com"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept",
