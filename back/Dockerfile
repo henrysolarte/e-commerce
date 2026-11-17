@@ -21,8 +21,12 @@ WORKDIR /app
 # Copiamos el binario compilado desde la etapa de builder
 COPY --from=builder /app/target/*.jar app.jar
 
+# Copiamos el script de conversion de DATABASE_URL
+COPY convert-database-url.sh convert-database-url.sh
+RUN chmod +x convert-database-url.sh
+
 # Render asigna dinamicamente el puerto en la variable de entorno PORT
 EXPOSE 8081
 
-# Ejecutamos la aplicacion con optimizacion de memoria para contenedores
-ENTRYPOINT ["sh", "-c", "java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -jar app.jar"]
+# Ejecutamos el script de conversion y luego la aplicacion con optimizacion de memoria
+ENTRYPOINT ["sh", "-c", "source ./convert-database-url.sh && java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -jar app.jar"]
