@@ -3,6 +3,7 @@ services:
     name: ecommerce-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
+    rootDir: ./back
     envVars:
       - key: DATABASE_URL
         scope: build
