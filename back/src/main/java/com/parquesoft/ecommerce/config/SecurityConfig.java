@@ -63,20 +63,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-            "http://localhost:5173", 
-            "http://localhost:5174", 
-            "http://localhost:3000",
-            "http://localhost:5500",
+        configuration.setAllowedOriginPatterns(List.of(
             "http://localhost:*",
-            "http://127.0.0.1:50173",
-            "http://127.0.0.1:5500",
-            "http://127.0.0.1:56851",
-            "http://127.0.0.1:60566",
             "http://127.0.0.1:*",
-            "https://web.postman.co",
-            "https://e-commerce-fr3k.onrender.com",
-            "https://*.onrender.com"
+            "https://*.onrender.com",
+            "https://e-commerce-fr3k.onrender.com"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept",
