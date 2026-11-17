@@ -16,4 +16,5 @@ EXPOSE 8080
 
 # Comando para iniciar el servidor
 # serve sirve archivos estáticos en el puerto especificado
-CMD ["sh", "-c", "serve -s . -l ${PORT:-8080}"]
+# No usar -s ya que no es una SPA
+CMD ["sh", "-c", "serve -l ${PORT:-8080}"]
