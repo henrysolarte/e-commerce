@@ -1,6 +1,6 @@
 const pagosIsProd = location.hostname.endsWith("onrender.com");
 const PAGOS_API_URL = pagosIsProd
-    ? "https://clemenss-perfumeria-backend.onrender.com/api"
+    ? "https://e-commerce-fr3k.onrender.com/api"
     : (window.__API_URL__ || "http://localhost:8081/api");
 
 document.addEventListener("DOMContentLoaded", function() {

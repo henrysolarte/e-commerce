@@ -9,7 +9,7 @@ const SESSION_KEY = "app.jwt";
 // Detectar entorno y fijar la URL de la API
 const authIsProd = location.hostname.endsWith("onrender.com");
 const AUTH_API_URL = authIsProd
-  ? "https://clemenss-perfumeria-backend.onrender.com/api"
+  ? "https://e-commerce-fr3k.onrender.com/api"
   : (window.__API_URL__ || "http://localhost:8081/api");
 
 // ----------------- Helpers de sesión -----------------

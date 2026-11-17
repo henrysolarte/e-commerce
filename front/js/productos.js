@@ -3,7 +3,7 @@
 
 const productosIsProd = location.hostname.endsWith("onrender.com");
 const PRODUCTOS_API_URL = productosIsProd
-  ? "https://clemenss-perfumeria-backend.onrender.com/api"
+  ? "https://e-commerce-fr3k.onrender.com/api"
   : (window.__API_URL__ || "http://localhost:8081/api");
 
 console.log('[PRODUCTOS-API] Usando API URL:', PRODUCTOS_API_URL);
