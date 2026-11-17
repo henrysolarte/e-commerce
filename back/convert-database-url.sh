@@ -2,11 +2,14 @@
 # convert-database-url.sh
 # Converts Render's DATABASE_URL to Spring Boot JDBC properties
 
+echo "=== DATABASE_URL Converter ==="
+echo "INPUT DATABASE_URL: $DATABASE_URL"
+
 if [ -z "$DATABASE_URL" ]; then
   echo "No DATABASE_URL set, using defaults"
-  export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ecommerce"
-  export SPRING_DATASOURCE_USERNAME="postgres"
-  export SPRING_DATASOURCE_PASSWORD="postgres"
+  SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ecommerce"
+  SPRING_DATASOURCE_USERNAME="postgres"
+  SPRING_DATASOURCE_PASSWORD="postgres"
 else
   echo "Converting DATABASE_URL to JDBC format..."
   
@@ -36,15 +39,24 @@ else
   
   # Build JDBC URL
   SPRING_DATASOURCE_URL="jdbc:postgresql://$HOST:$PORT/$DB_NAME"
-  
-  export SPRING_DATASOURCE_URL
-  export SPRING_DATASOURCE_USERNAME="$USERNAME"
-  export SPRING_DATASOURCE_PASSWORD="$PASSWORD"
+  SPRING_DATASOURCE_USERNAME="$USERNAME"
+  SPRING_DATASOURCE_PASSWORD="$PASSWORD"
   
   echo "Database configuration:"
   echo "  Host: $HOST"
   echo "  Port: $PORT"
   echo "  Database: $DB_NAME"
   echo "  Username: $USERNAME"
+  echo "  Password length: $(echo -n "$PASSWORD" | wc -c) chars"
   echo "  JDBC URL: $SPRING_DATASOURCE_URL"
 fi
+
+# Export variables for Java to use
+export SPRING_DATASOURCE_URL
+export SPRING_DATASOURCE_USERNAME
+export SPRING_DATASOURCE_PASSWORD
+
+echo "=== Exported variables ==="
+echo "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL"
+echo "SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME"
+echo "SPRING_DATASOURCE_PASSWORD length: $(echo -n "$SPRING_DATASOURCE_PASSWORD" | wc -c) chars"

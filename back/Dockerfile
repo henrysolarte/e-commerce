@@ -29,5 +29,5 @@ RUN chmod +x convert-database-url.sh
 EXPOSE 8081
 
 # Ejecutamos el script de conversion y luego la aplicacion con optimizacion de memoria
-# Use '.' instead of 'source' for POSIX sh compatibility
-ENTRYPOINT ["sh", "-c", ". ./convert-database-url.sh && java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -jar app.jar"]
+# Use exec to replace shell with java process, so env vars are inherited
+ENTRYPOINT ["sh", "-c", ". ./convert-database-url.sh && exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -jar app.jar"]
