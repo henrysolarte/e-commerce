@@ -1,0 +1,30 @@
+# DESPLIEGUE FRONTEND - PASOS RÁPIDOS
+
+## ✅ YA COMPLETADO
+- Backend: https://e-commerce-fr3k.onrender.com (funcionando)
+- Base de datos: PostgreSQL inicializada
+- Frontend config.js: Actualizado con URL del backend
+- Dockerfile frontend: Creado
+- Push a GitHub: Completado
+
+## 🚀 PRÓXIMO PASO - Desplegar Frontend
+
+1. Ve a: https://dashboard.render.com
+2. Click "+New" → "Web Service"
+3. Conecta tu repositorio: henrysolarte/e-commerce
+4. Llena estos campos:
+   - Name: clemenss-perfumeria-frontend
+   - Environment: Docker
+   - Deployment Directory (Root Directory): front
+   - Region: Oregon
+5. Click "Create Web Service"
+6. Espera ~5 minutos a que se despliegue
+
+## ✅ VERIFICACIÓN
+- Cuando esté listo, obtendrás una URL como: https://clemenss-perfumeria-frontend-xxxx.onrender.com
+- Ábrela y deberías ver tu sitio funcionando
+- Los productos deben cargar desde el backend
+
+## URLs FINALES
+- Backend API: https://e-commerce-fr3k.onrender.com/api
+- Frontend: https://clemenss-perfumeria-frontend-xxxx.onrender.com

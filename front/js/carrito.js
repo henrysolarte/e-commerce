@@ -3,7 +3,7 @@
 
 const carritoIsProd = location.hostname.endsWith("onrender.com");
 const CARRITO_API_URL = carritoIsProd
-    ? "https://perfumeriaclemenss.onrender.com/api"
+    ? "https://e-commerce-fr3k.onrender.com/api"
     : (window.__API_URL__ || "http://localhost:8081");
 
 const stockCache = {
