@@ -3,15 +3,15 @@ FROM eclipse-temurin:25-jdk AS builder
 WORKDIR /app
 
 # Copiamos archivos del wrapper y definicion del proyecto desde la carpeta back
-COPY ecommerceclase/back/.mvn/ .mvn/
-COPY ecommerceclase/back/mvnw ecommerceclase/back/pom.xml ./
+COPY back/.mvn/ .mvn/
+COPY back/mvnw back/pom.xml ./
 RUN chmod +x ./mvnw
 
 # Descarga de dependencias en cache
 RUN ./mvnw dependency:go-offline -B
 
 # Copiamos el codigo fuente y empaquetamos el JAR excluyendo tests pesados de BD
-COPY ecommerceclase/back/src/ src/
+COPY back/src/ src/
 RUN ./mvnw clean package -DskipTests
 
 # ETAPA 2: Imagen final ligera para ejecucion en Render
