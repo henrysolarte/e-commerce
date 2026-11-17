@@ -74,7 +74,9 @@ public class SecurityConfig {
             "http://127.0.0.1:56851",
             "http://127.0.0.1:60566",
             "http://127.0.0.1:*",
-            "https://web.postman.co"
+            "https://web.postman.co",
+            "https://e-commerce-fr3k.onrender.com",
+            "https://*.onrender.com"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept",
