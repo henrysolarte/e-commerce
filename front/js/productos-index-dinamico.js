@@ -66,7 +66,25 @@ function renderizarMasVendidos(contenedorId, cantidad) {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-  if (!window.productos) return;
+  // Esperar a que los productos estén cargados
+  if (!window.productos || window.productos.length === 0) {
+    // Esperar al evento productosListos
+    await new Promise((resolve) => {
+      const handleProductosListos = () => {
+        document.removeEventListener('productosListos', handleProductosListos);
+        resolve();
+      };
+      document.addEventListener('productosListos', handleProductosListos);
+      
+      // Timeout de seguridad de 10 segundos
+      setTimeout(resolve, 10000);
+    });
+  }
+
+  if (!window.productos || window.productos.length === 0) {
+    console.warn('No se pudieron cargar los productos');
+    return;
+  }
 
   if (typeof window.syncProductosConBackend === 'function') {
     await window.syncProductosConBackend();
