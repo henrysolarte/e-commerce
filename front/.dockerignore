@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.vscode
+.DS_Store
+*.code-workspace
+README.md
+server
+render.yaml
