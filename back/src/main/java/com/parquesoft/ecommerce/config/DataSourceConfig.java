@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Primary;
 import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * DataSource configuration for Render environment.
@@ -38,11 +40,21 @@ public class DataSourceConfig {
         String host = dbUri.getHost();
         int port = dbUri.getPort() != -1 ? dbUri.getPort() : 5432;
         String database = dbUri.getPath().substring(1); // Remove leading /
-        String user = dbUri.getUserInfo().split(":")[0];
-        String password = dbUri.getUserInfo().split(":")[1];
+        
+        // Parse and decode user info
+        String userInfo = dbUri.getUserInfo();
+        if (userInfo == null || !userInfo.contains(":")) {
+            throw new IllegalStateException("DATABASE_URL must contain user:password");
+        }
+        
+        String[] credentials = userInfo.split(":", 2);
+        String user = URLDecoder.decode(credentials[0], StandardCharsets.UTF_8);
+        String password = URLDecoder.decode(credentials[1], StandardCharsets.UTF_8);
         
         // Build JDBC URL
         String jdbcUrl = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
+        
+        System.out.println("🔗 Connecting to PostgreSQL: " + host + ":" + port + "/" + database + " as " + user);
         
         // Create HikariCP DataSource
         HikariConfig config = new HikariConfig();
@@ -60,3 +72,4 @@ public class DataSourceConfig {
         return new HikariDataSource(config);
     }
 }
+
