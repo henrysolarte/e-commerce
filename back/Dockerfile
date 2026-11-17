@@ -28,7 +28,6 @@ RUN chmod +x convert-database-url.sh
 # Render asigna dinamicamente el puerto en la variable de entorno PORT
 EXPOSE 8081
 
-# Ejecutamos el script de conversion (que genera application-render.properties)
-# y luego la aplicacion con optimizacion de memoria
-# Spring Boot will read application-prod.properties (the base) and then override with render-specific props
-ENTRYPOINT ["sh", "-c", ". ./convert-database-url.sh && exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dspring.profiles.active=prod -jar app.jar"]
+# Ejecutamos el script de conversion y luego la aplicacion
+# Pasamos server.address como flag de Java para asegurar que se use
+ENTRYPOINT ["sh", "-c", "set -x; . ./convert-database-url.sh; exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dserver.address=0.0.0.0 -Dserver.port=${PORT:-8081} -Dspring.profiles.active=prod -jar app.jar"]
