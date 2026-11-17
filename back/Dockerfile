@@ -30,5 +30,5 @@ EXPOSE 8081
 
 # Ejecutamos el script de conversion (que genera application-render.properties)
 # y luego la aplicacion con optimizacion de memoria
-# Spring Boot will read application-render.properties automatically
-ENTRYPOINT ["sh", "-c", ". ./convert-database-url.sh && exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dspring.config.location=file:/app/application-render.properties -jar app.jar"]
+# Spring Boot will read application-prod.properties (the base) and then override with render-specific props
+ENTRYPOINT ["sh", "-c", ". ./convert-database-url.sh && exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dspring.profiles.active=prod -jar app.jar"]
