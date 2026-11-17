@@ -1,0 +1,458 @@
+// productos.js
+// Lista de perfumes Clemenss para mostrar en productos.html
+
+const productosIsProd = location.hostname.endsWith("onrender.com");
+const PRODUCTOS_API_URL = productosIsProd
+  ? "https://perfumeriaclemenss.onrender.com/api"
+  : (window.__API_URL__ || "http://localhost:8081/api");
+
+window.productos = [
+  {
+    nombre: "La Vie Est Belle",
+    precio: 500000,
+    imagen: "images/product-thumb-1.png",
+    categoria: "Para ella",
+    descuento: "10% OFF",
+    precioOriginal: 350000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Una fragancia femenina, dulce y sofisticada, con notas de iris, jazmín y flor de azahar. Ideal para mujeres que buscan elegancia y alegría en cada aroma.",
+    stock: 10
+  },
+ 
+  {
+    nombre: "Flowerbomb",
+    precio: 230000,
+    imagen: "images/product-thumb-2.png",
+    categoria: "Para ella",
+    descuento: "10% OFF",
+    precioOriginal: 330000,
+    rating: 4.5,
+    reviews: 41,
+    descripcion: "Explosión floral con matices de té y bergamota, envolvente y moderno. Perfecto para mujeres que desean destacar con un aroma vibrante y femenino.",
+    stock: 10
+  },
+  {
+    nombre: "Chanel No 5",
+    precio: 450000,
+    imagen: "images/product-thumb-3.png",
+    categoria: "Para ella",
+    descuento: "15% OFF",
+    precioOriginal: 600000,
+    rating: 4.5,
+    reviews: 32,
+    descripcion: "El clásico eterno de Chanel, con notas de jazmín, rosa y aldehídos. Elegancia y sofisticación en cada gota, símbolo de la feminidad atemporal.",
+    stock: 10
+  },
+  {
+    nombre: "Good Girl",
+    precio: 420000,
+    imagen: "images/product-thumb-4.png",
+    categoria: "Para ella",
+    descuento: "15% OFF",
+    precioOriginal: 540000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Una fragancia audaz y sensual, con notas de almendra, café y cacao. Para mujeres modernas y seguras que disfrutan de la dualidad entre lo dulce y lo intenso.",
+    stock: 10
+  },
+  {
+    nombre: "Black Opium",
+    precio: 340000,
+    imagen: "images/product-thumb-5.png",
+    categoria: "Para ella",
+    descuento: "15% OFF",
+    precioOriginal: 460000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Aroma oriental y vibrante, con café, vainilla y flores blancas. Perfecto para noches especiales y mujeres que buscan un toque misterioso.",
+    stock: 10
+  },
+  {
+    nombre: "J'adore",
+    precio: 480000,
+    imagen: "images/product-thumb-6.png",
+    categoria: "Para ella",
+    descuento: "15% OFF",
+    precioOriginal: 620000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Fragancia floral y luminosa, con notas de ylang-ylang, rosa y jazmín. Refleja la feminidad y el lujo en cada aplicación.",
+    stock: 10
+  },
+  {
+    nombre: "Sì (Giorgio Armani)",
+    precio: 380000,
+    imagen: "images/product-thumb-7.png",
+    categoria: "Para ella",
+    descuento: "10% OFF",
+    precioOriginal: 480000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Notas de grosella negra, rosa y vainilla. Un perfume elegante y moderno para mujeres independientes y sofisticadas.",
+    stock: 10
+  },
+  {
+    nombre: "Alien (Mugler)",
+    precio: 350000,
+    imagen: "images/product-thumb-8.png",
+    categoria: "Para ella",
+    descuento: "15% OFF",
+    precioOriginal: 460000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Fragancia misteriosa y envolvente, con jazmín sambac y ámbar blanco. Ideal para quienes buscan un aroma único y fuera de lo común.",
+    stock: 10
+  },
+  {
+    nombre: "Portrait of a Lady",
+    precio: 400000,
+    imagen: "images/product-thumb-9.png",
+    categoria: "Para ella",
+    descuento: "17% OFF",
+    precioOriginal: 620000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Rosa, especias y pachulí en una fragancia intensa y sofisticada. Para mujeres que buscan elegancia y carácter.",
+    stock: 10
+  },
+  {
+    nombre: "Parfums de Marly Valaya",
+    precio: 390000,
+    imagen: "images/product-thumb-10.png",
+    categoria: "Para ella",
+    descuento: "15% OFF",
+    precioOriginal: 490000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Aroma fresco y floral, con notas de almizcle y flores blancas. Ideal para quienes buscan delicadeza y modernidad.",
+    stock: 10
+  },
+    {
+    nombre: "360 para mujer",
+    precio: 210000,
+    imagen: "images/product-thumb-24.png",
+    categoria: "Para ella",
+    descuento: "12% OFF",
+    precioOriginal: 240000,
+    rating: 4.3,
+    reviews: 98,
+    descripcion: "Perfume fresco y vibrante con notas florales y frutales. Ideal para mujeres modernas que buscan un aroma ligero y duradero.",
+    stock: 10
+  },
+  {
+    nombre: "Le Male Elixir",
+    precio: 400000,
+    imagen: "images/product-thumb-12.png",
+    categoria: "Para él",
+    descuento: "10% OFF",
+    precioOriginal: 500000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Aroma masculino y seductor, con notas de lavanda, menta y vainilla. Para hombres que buscan destacar con personalidad y frescura.",
+    stock: 10
+  },
+  {
+    nombre: "Bleu de Chanel",
+    precio: 1000000,
+    imagen: "images/product-thumb-13.png",
+    categoria: "Para él",
+    descuento: "15% OFF",
+    precioOriginal: 650000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Fragancia fresca y amaderada, con notas de cítricos y sándalo. Elegancia y libertad para el hombre moderno.",
+    stock: 10
+  },
+  {
+    nombre: "One Million",
+    precio: 480000,
+    imagen: "images/product-thumb-14.png",
+    categoria: "Para él",
+    descuento: "20% OFF",
+    precioOriginal: 680000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Aroma intenso y especiado, con mandarina, canela y cuero. Para hombres audaces y con espíritu ganador.",
+    stock: 10
+  },
+  {
+    nombre: "Dior Sauvage",
+    precio: 370000,
+    imagen: "images/product-thumb-13.png",
+    categoria: "Para él",
+    descuento: "15% OFF",
+    precioOriginal: 480000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Fragancia fresca y salvaje, con bergamota y ambroxan. Inspirada en la naturaleza y la libertad masculina.",
+    stock: 10
+  },
+  {
+    nombre: "Creed Aventus",
+    precio: 450000,
+    imagen: "images/product-thumb-14.png",
+    categoria: "Para él",
+    descuento: "15% OFF",
+    precioOriginal: 650000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Perfume sofisticado y potente, con piña, musgo y madera. Para líderes y hombres de éxito.",
+    stock: 10
+  },
+  {
+    nombre: "Acqua Di Gio Parfum",
+    precio: 400000,
+    imagen: "images/product-thumb-15.png",
+    categoria: "Para él",
+    descuento: "15% OFF",
+    precioOriginal: 600000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Aroma marino y fresco, con notas de bergamota y pachulí. Perfecto para el hombre activo y elegante.",
+    stock: 10
+  },
+  {
+    nombre: "Le Labo Santal 33",
+    precio: 450000,
+    imagen: "images/product-thumb-16.png",
+    categoria: "Para él",
+    descuento: "19% OFF",
+    precioOriginal: 650000,
+    rating: 4.5,
+    reviews: 222,
+    descripcion: "Fragancia unisex, amaderada y especiada, con sándalo y cardamomo. Para quienes buscan un aroma distintivo y moderno.",
+    stock: 10
+  },
+  {
+    nombre: "Afnan 9pm",
+    precio: 320000,
+    imagen: "images/product-thumb-17.png",
+    categoria: "Para él",
+    descuento: "12% OFF",
+    precioOriginal: 365000,
+    rating: 4.5,
+    reviews: 180,
+    descripcion: "Aroma oriental y dulce, con notas de manzana, lavanda y vainilla. Ideal para noches especiales y hombres modernos.",
+    stock: 10
+  },
+  {
+    nombre: "Boss",
+    precio: 390000,
+    imagen: "images/product-thumb-18.png",
+    categoria: "Para él",
+    descuento: "10% OFF",
+    precioOriginal: 430000,
+    rating: 4.5,
+    reviews: 210,
+    descripcion: "Fragancia fresca y elegante, con notas de manzana, canela y sándalo. Para hombres seguros y sofisticados.",
+    stock: 10
+  },
+  {
+    nombre: "Eau De Cedrat",
+    precio: 310000,
+    imagen: "images/product-thumb-181.png",
+    categoria: "Para él",
+    descuento: "15% OFF",
+    precioOriginal: 365000,
+    rating: 4.5,
+    reviews: 95,
+    descripcion: "Aroma cítrico y vibrante, con notas de cedro y menta. Perfecto para el hombre activo y enérgico.",
+    stock: 10
+  }
+];
+
+function normalizarNombreProducto(nombre) {
+  return String(nombre || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+}
+
+function nombreCanonicoProducto(nombre) {
+  const normalizado = normalizarNombreProducto(nombre);
+  const alias = {
+    onemillon: 'onemillion',
+  };
+  return alias[normalizado] || normalizado;
+}
+
+async function syncProductosConBackend() {
+  try {
+    const res = await fetch(`${PRODUCTOS_API_URL}/products`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    const productosDb = Array.isArray(data) ? data : [];
+    const fallbackByName = new Map(
+      window.productos.map((p) => [nombreCanonicoProducto(p.nombre), p])
+    );
+
+    const mapCategoriaDb = (categoriaDb) => {
+      if (!categoriaDb) return "Para ella";
+      // Si la categoría ya es "Para ella" o "Para él", devolvamos directo
+      if (categoriaDb === "Para ella") return "Para ella";
+      if (categoriaDb === "Para él") return "Para él";
+      
+      const c = normalizarNombreProducto(categoriaDb);
+      // Si después de normalizar contiene "ella", es para ella
+      if (c.includes("ella")) return "Para ella";
+      // Si después de normalizar contiene "el" o "hombre", es para él
+      if (c.includes("hombre") || (c.includes("el") && !c.includes("ella"))) return "Para él";
+      return "Para ella"; // Default
+    };
+
+    window.productos = productosDb.map((db) => {
+      const canon = nombreCanonicoProducto(db.nombre);
+      const fallback = fallbackByName.get(canon) || {};
+      const precio = Number(db.precio) || Number(fallback.precio) || 0;
+      const descuento = fallback.descuento || "10% OFF";
+      const precioOriginal = Number(fallback.precioOriginal) || Math.round(precio * 1.2);
+
+      return {
+        productoId: Number(db.id),
+        nombre: db.nombre || fallback.nombre || "Producto",
+        precio,
+        imagen: db.imagen || fallback.imagen || "images/perfume_232x210.png",
+        categoria: mapCategoriaDb(db.categoria),
+        descuento,
+        precioOriginal: Math.max(precio, precioOriginal),
+        rating: Number(fallback.rating) || 4.5,
+        reviews: Number(fallback.reviews) || 100,
+        descripcion: db.descripcion || fallback.descripcion || "",
+        stock: Math.max(0, Number(db.stock) || 0),
+      };
+    });
+
+    return true;
+  } catch (err) {
+    console.warn("No se pudo sincronizar productos desde backend:", err?.message || err);
+    return false;
+  }
+}
+
+window.syncProductosConBackend = syncProductosConBackend;
+
+function renderProductos() {
+  const contenedor = document.getElementById('productos-lista');
+  if (!contenedor) return;
+  contenedor.innerHTML = '';
+  if (!productos || productos.length === 0) {
+    contenedor.innerHTML = '<div class="col"><div class="alert alert-warning text-center">No hay productos para mostrar.</div></div>';
+    return;
+  }
+  productos.forEach((producto, idx) => {
+    const card = document.createElement('div');
+    card.className = 'col';
+    const hayStock = producto.stock > 0;
+    const textoStock = hayStock ? `Stock ${producto.stock}` : 'Sin stock';
+    const clasBoton = hayStock ? 'btn-primary' : 'btn-secondary disabled';
+    const textBoton = hayStock ? '<svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart' : 'Sin stock';
+    
+    card.innerHTML = `
+      <div class="product-item card h-100 p-3">
+        <figure class="text-center">
+          <img src="${producto.imagen}" alt="${producto.nombre}" class="tab-image" style="max-width:100%;height:auto;">
+        </figure>
+        <div class="d-flex flex-column text-center">
+          <h3 class="fs-6 fw-normal">${producto.nombre}</h3>
+          <div class="mb-2">
+            <span class="rating">
+              ${'<svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>'.repeat(Math.floor(producto.rating))}
+              <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
+            </span>
+            <span>(${producto.reviews})</span>
+          </div>
+          <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+            <del>$${producto.precioOriginal.toLocaleString()}</del>
+            <span class="text-dark fw-semibold">$${producto.precio.toLocaleString()}</span>
+            <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">${producto.descuento}</span>
+          </div>
+          <div class="mb-2">
+            <span class="badge ${hayStock ? 'bg-success' : 'bg-danger'} fs-7">${textoStock}</span>
+          </div>
+          <div class="button-area p-3 pt-0">
+            <div class="row g-1 mt-2">
+              <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href='#heart'></use></svg></a></div>
+              <div class="col-7">
+                <button type="button" class="btn ${clasBoton} rounded-1 p-2 fs-7 btn-cart" id="btn-cart-${idx}" data-idx="${idx}" ${!hayStock ? 'disabled' : ''}>
+                  ${textBoton}
+                </button>
+              </div>
+              <div class="col-2"><a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6"><svg width="18" height="18"><use xlink:href='#heart'></use></svg></a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    contenedor.appendChild(card);
+  });
+
+  // Asignar eventos a todos los botones después de renderizar (sin setTimeout)
+  document.querySelectorAll('.btn-cart').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const idx = this.getAttribute('data-idx');
+      const producto = productos[idx];
+      
+      // Validar que hay stock
+      if (producto.stock <= 0) {
+        alert(`Lo siento, "${producto.nombre}" no tiene stock disponible.`);
+        return;
+      }
+      
+      if (!usuarioLogueado()) {
+        alert('Debes iniciar sesión para agregar productos al carrito.');
+        window.location.href = 'login.html';
+        return;
+      }
+      const cantidad = parseInt(document.getElementById(`qty-prod-${idx}`).value) || 1;
+      
+      // Validar que la cantidad no exceda el stock
+      if (cantidad > producto.stock) {
+        alert(`Solo hay ${producto.stock} unidades disponibles de "${producto.nombre}".`);
+        return;
+      }
+      
+      console.log('Evento directo: Add to Cart clickeado:', producto.nombre);
+      agregarAlCarrito({
+        productoId: producto.productoId,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        imagen: producto.imagen,
+        cantidad: cantidad
+      });
+      // Mostrar mensaje en index.html
+      const mensaje = document.getElementById('mensaje');
+      if (mensaje) {
+        mensaje.textContent = 'Producto agregado al carrito.';
+        mensaje.style.display = 'block';
+        setTimeout(() => { mensaje.style.display = 'none'; }, 2500);
+      }
+      // Actualizar carrito.html si está abierto
+      if (window.location.pathname.includes('carrito.html')) {
+        if (typeof mostrarCarrito === 'function') {
+          mostrarCarrito();
+        }
+      }
+    });
+  });
+  console.log('Botones Add to Cart listos y eventos asignados.');
+}
+
+
+function usuarioLogueado() {
+  try {
+    const session = localStorage.getItem('app.jwt');
+    if (!session) return false;
+    const obj = JSON.parse(session);
+    return !!(obj && obj.user && obj.user.name);
+  } catch {
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderProductos);
