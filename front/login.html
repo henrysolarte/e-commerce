@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="config.js"></script>
 </head>
 <body class="bg-light d-flex align-items-center" style="min-height:100vh;">
   <div class="container">
@@ -37,7 +36,7 @@
             <button type="button" class="btn btn-outline-primary w-100 mt-2" onclick="window.location.href='register.html'">Regístrate</button>
 
             <p class="text-muted small mt-3">
-              Demo: <code><a href="auto-login.html" style="color: #800080;">admin@demo.com / Admin123!</a></code>
+              Demo: <code>admin@demo.com / Admin123!</code>
             </p>
           </div>
         </div>
@@ -47,21 +46,5 @@
 
   <!-- Script centralizado de autenticación -->
   <script src="js/auth.js"></script>
-  <script>
-    // Garantizar que attachLoginHandler se ejecute después de que auth.js se cargue completamente
-    function ensureLoginHandler() {
-      if (typeof attachLoginHandler === 'function') {
-        attachLoginHandler();
-      } else {
-        setTimeout(ensureLoginHandler, 100);
-      }
-    }
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', ensureLoginHandler);
-    } else {
-      ensureLoginHandler();
-    }
-  </script>
 </body>
 </html>

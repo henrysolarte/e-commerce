@@ -1,8 +1,8 @@
 // register.js - Registro de usuario con API backend (mejorado)
 const registerIsProd = location.hostname.endsWith("onrender.com");
 const REGISTER_API_URL = registerIsProd
-  ? "https://e-commerce-fr3k.onrender.com"
-  : (window.__API_URL__ || "http://localhost:8081");
+  ? "https://perfumeriaclemenss.onrender.com/api"
+  : (window.__API_URL__ || "http://localhost:3002/api");
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${REGISTER_API_URL}/api/auth/register`, {
+      const res = await fetch(`${REGISTER_API_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),

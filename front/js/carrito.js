@@ -3,8 +3,8 @@
 
 const carritoIsProd = location.hostname.endsWith("onrender.com");
 const CARRITO_API_URL = carritoIsProd
-    ? "https://e-commerce-fr3k.onrender.com/api"
-    : (window.__API_URL__ || "http://localhost:8081");
+    ? "https://perfumeriaclemenss.onrender.com/api"
+    : (window.__API_URL__ || "http://localhost:3002/api");
 
 const stockCache = {
     byId: new Map(),
@@ -30,10 +30,10 @@ function nombreCanonicoProducto(nombre) {
 
 async function cargarStockDesdeBackend() {
     try {
-        const res = await fetch(`${CARRITO_API_URL}/products`, { cache: "no-store" });
+        const res = await fetch(`${CARRITO_API_URL}/perfumes`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        const productos = Array.isArray(data) ? data : [];
+        const productos = Array.isArray(data?.productos) ? data.productos : [];
 
         stockCache.byId.clear();
         stockCache.byName.clear();
@@ -44,7 +44,7 @@ async function cargarStockDesdeBackend() {
             if (Number.isInteger(id)) {
                 stockCache.byId.set(id, stock);
             }
-            stockCache.byName.set(nombreCanonicoProducto(p.name), stock);
+            stockCache.byName.set(nombreCanonicoProducto(p.nombre), stock);
         });
     } catch (err) {
         console.warn("No se pudo cargar stock desde backend:", err?.message || err);

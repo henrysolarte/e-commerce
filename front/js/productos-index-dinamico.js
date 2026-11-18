@@ -1,4 +1,4 @@
-// Script para poblar productos en index.html dinámicamente desde window.productos
+// Script para poblar productos en index.html dinámicamente desde la API
 
 function renderizarProductosPorCategoria(categoria, contenedorId) {
   const contenedor = document.getElementById(contenedorId);
@@ -6,63 +6,74 @@ function renderizarProductosPorCategoria(categoria, contenedorId) {
 
   const productosFiltrados = window.productos.filter(p => p.categoria === categoria);
 
+  if (productosFiltrados.length === 0) {
+    contenedor.innerHTML = '<p class="text-center">No hay productos en esta categoría</p>';
+    return;
+  }
+
   contenedor.innerHTML = productosFiltrados.map((producto, index) => {
-    // Usamos el índice global del array de `window.productos` para mantener la consistencia
-    const productoIndex = window.productos.findIndex(p => p.nombre === producto.nombre);
-    // Escapar comillas en el nombre del producto para el onclick
-    const nombreEscapado = producto.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const productoIndex = window.productos.findIndex(p => p.id === producto.id);
+    const nombreEscapado = (producto.nombre || '').replace(/'/g, "\\'");
+    
     return `
-        <div class="col">
-          <div class="product-item">
-            <figure>
-              <a href="#" title="${producto.nombre}" onclick="event.preventDefault();showProductModal('${nombreEscapado}')">
-                <img src="${producto.imagen}" alt="${producto.nombre}" class="tab-image" data-index="${productoIndex}">
-              </a>
-            </figure>
-            <div class="d-flex flex-column text-center">
-              <h3 class="fs-6 fw-normal" style="cursor:pointer;" onclick="event.preventDefault();showProductModal('${nombreEscapado}')">${producto.nombre}</h3>
-              <div class="mb-2">
-                <span class="stock-info" style="font-weight: 600; font-size: 1rem; color: #2c3e50;">
-                  Stock: ${producto.stock}
-                </span>
-              </div>
-              <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
-                <del>$${producto.precioOriginal.toLocaleString()}</del>
-                <span class="text-dark fw-semibold">$${producto.precio.toLocaleString()}</span>
-                <span class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">${producto.descuento}</span>
-              </div>
-              <div class="button-area p-3 pt-0">
-                <button type="button" class="btn-add-to-cart" data-index="${productoIndex}" ${producto.stock <= 0 ? 'disabled' : ''}" style="width:100%;padding:12px 20px;font-weight:600;font-size:1rem;background-color:#4CAF50;color:white;border:none;border-radius:12px;cursor:pointer;transition:background-color 0.3s ease;font-family:Arial,sans-serif;">
-                  Agregar al carrito
-                </button>
+      <div class="col">
+        <div class="product-item">
+          <figure>
+            <a href="#" title="${producto.nombre}" onclick="event.preventDefault();showProductModal('${nombreEscapado}')">
+              <img src="${producto.imagen}" alt="${producto.nombre}" class="tab-image" data-index="${productoIndex}">
+            </a>
+          </figure>
+          <div class="d-flex flex-column text-center">
+            <h3 class="fs-6 fw-normal">${producto.nombre}</h3>
+            <div class="mb-2">
+              <span class="rating">
+                ${'<svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>'.repeat(Math.floor(producto.rating || 4))}${((producto.rating || 4) % 1 ? '<svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>' : '')}
+              </span>
+              <span>(${producto.reviews || 0})</span>
+            </div>
+            <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+              <span class="text-dark fw-semibold">$${(producto.precio || 0).toLocaleString('es-CO', {maximumFractionDigits: 0})}</span>
+            </div>
+            <div class="button-area p-3 pt-0">
+              <div class="row g-1 mt-2">
+                <div class="col-12">
+                  <button type="button" class="btn btn-primary rounded-1 p-2 fs-7 btn-add-to-cart" data-index="${productoIndex}" data-nombre="${nombreEscapado}" data-precio="${producto.precio}">
+                    <svg width="18" height="18"><use xlink:href='#cart'></use></svg> Agregar al carrito
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      `;
+      </div>
+    `;
   }).join('');
 }
 
-function renderizarMasVendidos(contenedorId, cantidad) {
+function renderizarMasVendidos(contenedorId, limite = 12) {
   const contenedor = document.getElementById(contenedorId);
   if (!contenedor) return;
 
-  // Ordenar productos por 'reviews' de forma descendente y tomar la cantidad especificada
-  const masVendidos = window.productos
-    .slice() // Crear una copia para no modificar el array original
-    .sort((a, b) => b.reviews - a.reviews)
-    .slice(0, cantidad);
+  // Ordenar por número de reviews (como proxy de "más vendidos")
+  const masVendidos = [...window.productos]
+    .sort((a, b) => (b.reviews || 0) - (a.reviews || 0))
+    .slice(0, limite);
 
-  contenedor.innerHTML = masVendidos.map(producto => {
-    // Escapar comillas en el nombre del producto para el onclick
-    const nombreEscapado = producto.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    return `
+  contenedor.innerHTML = `
+    <div class="swiper-wrapper">
+      ${masVendidos.map((producto, index) => {
+        const productoIndex = window.productos.findIndex(p => p.id === producto.id);
+        const nombreEscapado = (producto.nombre || '').replace(/'/g, "\\'");
+        
+        return `
       <a href="#" class="nav-link swiper-slide text-center" onclick="event.preventDefault();showProductModal('${nombreEscapado}')">
         <img src="${producto.imagen}" class="rounded-circle" alt="${producto.nombre}">
         <h4 class="fs-6 mt-3 fw-normal category-title">${producto.nombre}</h4>
       </a>
     `;
-  }).join('');
+      }).join('')}
+    </div>
+  `;
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -98,21 +109,14 @@ document.addEventListener('DOMContentLoaded', async function() {
   const style = document.createElement('style');
   style.textContent = `
     .btn-add-to-cart:hover:not(:disabled) {
-      background-color: #45a049 !important;
+      background-color: #0d6efd;
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    .btn-add-to-cart:disabled {
-      background-color: #cccccc !important;
-      cursor: not-allowed;
-      opacity: 0.6;
     }
   `;
   document.head.appendChild(style);
 
   // Delegación de eventos para botones "Agregar al carrito"
   document.body.addEventListener('click', function(e) {
-    // Manejar botón "Agregar al carrito"
     if (e.target.closest('.btn-add-to-cart')) {
       e.preventDefault();
       const button = e.target.closest('.btn-add-to-cart');
@@ -120,11 +124,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       const producto = window.productos[productoIndex];
 
       if (producto) {
-        if (producto.stock <= 0) {
-          alert('Producto sin stock.');
-          button.disabled = true;
-          return;
-        }
         if (!usuarioLogueado()) {
           alert('Debes iniciar sesión para agregar productos al carrito.');
           window.location.href = 'login.html';
@@ -132,24 +131,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         agregarAlCarrito({
-          productoId: producto.productoId,
+          id: producto.id,
           nombre: producto.nombre,
           precio: producto.precio,
           imagen: producto.imagen,
           cantidad: 1
         });
-        
-        // Rebajar stock
-        producto.stock -= 1;
-        
-        // Mostrar alerta
-        alert(`✓ ${producto.nombre} agregado al carrito!`);
-        
-        // Actualizar botón si stock llega a 0
-        if (producto.stock <= 0) {
-          button.disabled = true;
-          button.textContent = 'Sin stock';
-        }
       }
     }
   });

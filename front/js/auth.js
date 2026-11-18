@@ -9,8 +9,8 @@ const SESSION_KEY = "app.jwt";
 // Detectar entorno y fijar la URL de la API
 const authIsProd = location.hostname.endsWith("onrender.com");
 const AUTH_API_URL = authIsProd
-  ? "https://e-commerce-fr3k.onrender.com/api"
-  : (window.__API_URL__ || "http://localhost:8081/api");
+  ? "https://perfumeriaclemenss.onrender.com/api"
+  : (window.__API_URL__ || "http://localhost:3002/api");
 
 // ----------------- Helpers de sesión -----------------
 function setSession(user) {
@@ -42,7 +42,7 @@ function borrarCarritoLocal() { localStorage.removeItem("carrito"); }
 
 // ----------------- API -----------------
 async function apiLogin(email, password, signal) {
-  const res = await fetch(`${AUTH_API_URL}/auth/login`, {
+  const res = await fetch(`${AUTH_API_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -114,14 +114,9 @@ function attachLoginHandler() {
     setLoading(submitBtn, true);
     try {
       const data = await apiLogin(email, password, inFlight.signal);
-      // El backend retorna directamente el usuario, no anidado
-      const user = {
-        name: data.fullName || data.email,
-        email: data.email,
-        token: data.token,
-        role: data.role
-      };
-      setSession({ user });
+      if (data?.user) {
+        setSession({ user: data.user });
+      }
       borrarCarritoLocal();
       window.location.assign(redirectTo);
     } catch (err) {
@@ -222,7 +217,7 @@ function updateAuthUI() {
 }
 
 // Exponer helpers y auto-inicializar
-window.Auth = { requireAuth, logout, getSession, updateAuthUI, apiLogin };
+window.Auth = { requireAuth, logout, getSession, updateAuthUI };
 
 document.addEventListener("DOMContentLoaded", () => {
   attachLoginHandler();

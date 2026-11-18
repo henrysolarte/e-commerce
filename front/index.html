@@ -617,7 +617,6 @@
   <script src="js/jquery-1.11.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-  <script src="config.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="js/carrito.js"></script>
@@ -643,26 +642,6 @@ const cerrarModal = document.getElementById('cerrar-modal');
 cerrarModal.onclick = () => { modal.style.display = 'none'; };
 modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
-// Función para mostrar el modal del producto
-function showProductModal(nombreProducto) {
-  if (!window.productos) return;
-  
-  // Buscar el producto por nombre (con soporte para caracteres especiales)
-  const producto = window.productos.find(p => p.nombre === nombreProducto);
-  
-  if (!producto) {
-    console.warn('Producto no encontrado:', nombreProducto);
-    return;
-  }
-  
-  document.getElementById('modal-img').src = producto.imagen;
-  document.getElementById('modal-nombre').textContent = producto.nombre;
-  document.getElementById('modal-precio').textContent = `$${producto.precio}`;
-  document.getElementById('modal-categoria').textContent = producto.categoria;
-  document.getElementById('modal-descripcion').textContent = producto.descripcion || '';
-  modal.style.display = 'flex';
-}
-
 // Asignar evento click a cada imagen de producto
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.product-item img').forEach((img, idx) => {
@@ -672,7 +651,12 @@ window.addEventListener('DOMContentLoaded', () => {
       ev.stopPropagation();
       const producto = window.productos && window.productos[idx];
       if (!producto) return;
-      showProductModal(producto.nombre);
+      document.getElementById('modal-img').src = producto.imagen;
+      document.getElementById('modal-nombre').textContent = producto.nombre;
+      document.getElementById('modal-precio').textContent = `$${producto.precio}`;
+      document.getElementById('modal-categoria').textContent = producto.categoria;
+      document.getElementById('modal-descripcion').textContent = producto.descripcion || '';
+      modal.style.display = 'flex';
     };
   });
 });
