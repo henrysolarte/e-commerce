@@ -29,22 +29,8 @@ public class ProductController {
     @Operation(summary = "Listar catalogo de productos activos", description = "Acceso publico utilizado en la tienda")
     @ApiResponse(responseCode = "200", description = "Catalogo obtenido exitosamente")
     public ResponseEntity<?> getAllActiveProducts() {
-        List<ProductEntity> products = productService.getAllActiveProducts();
-        List<Map<String, Object>> response = products.stream().map(p -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", p.getId());
-            map.put("nombre", p.getName());
-            map.put("precio", p.getPrice());
-            map.put("stock", p.getStock());
-            map.put("imagen", p.getImage() != null ? p.getImage() : "images/perfume_232x210.png");
-            map.put("categoria", p.getCategory() != null ? p.getCategory().getName() : "Otros");
-            map.put("descripcion", p.getDescription());
-            map.put("rating", p.getRating() != null ? p.getRating() : 4.5);
-            map.put("reviews", p.getReviews() != null ? p.getReviews() : 0);
-            map.put("sku", p.getSku());
-            return map;
-        }).collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+        // TEMPORAL: Devolver vacío para debug
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
     @GetMapping("/sku/{sku}")
