@@ -29,7 +29,7 @@ function renderizarProductosPorCategoria(categoria, contenedorId) {
               <span class="rating">
                 ${'<svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>'.repeat(Math.floor(producto.rating || 4))}${((producto.rating || 4) % 1 ? '<svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>' : '')}
               </span>
-              <span>(${producto.reviews || 0})</span>
+              <span>(Stock: ${producto.stock || 0})</span>
             </div>
             <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
               <span class="text-dark fw-semibold">$${(producto.precio || 0).toLocaleString('es-CO', {maximumFractionDigits: 0})}</span>

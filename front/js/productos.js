@@ -108,7 +108,7 @@ function renderProductos() {
               ${'<svg width="18" height="18" class="text-warning"><use xlink:href="#star-full"></use></svg>'.repeat(Math.floor(producto.rating))}
               <svg width="18" height="18" class="text-warning"><use xlink:href="#star-half"></use></svg>
             </span>
-            <span>(${producto.reviews})</span>
+            <span>(Stock: ${producto.stock || 0})</span>
           </div>
           <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
             <del>$${precioOriginal.toLocaleString()}</del>
