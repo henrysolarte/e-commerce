@@ -1,8 +1,8 @@
 // register.js - Registro de usuario con API backend (mejorado)
 const registerIsProd = location.hostname.endsWith("onrender.com");
 const REGISTER_API_URL = registerIsProd
-  ? "https://perfumeriaclemenss.onrender.com/api"
-  : (window.__API_URL__ || "http://localhost:3002/api");
+  ? "https://e-commerce-fr3k.onrender.com/api/auth"
+  : "http://localhost:8081/api/auth";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");

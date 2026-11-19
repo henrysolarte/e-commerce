@@ -99,7 +99,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/api/orders/create", {
+            const apiBase = location.hostname.endsWith("onrender.com")
+                ? "https://e-commerce-fr3k.onrender.com/api"
+                : "http://localhost:8081/api";
+            const response = await fetch(`${apiBase}/orders/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -142,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const itemTotal = (prod.precio || 0) * (prod.cantidad || 1);
             subtotal += itemTotal;
             return {
-                productId: prod.id,
+                productId: prod.id ?? prod.productoId,
                 quantity: prod.cantidad || 1,
                 unitPrice: prod.precio
             };
@@ -157,9 +160,9 @@ document.addEventListener("DOMContentLoaded", function() {
             iva: iva,
             totalAmount: totalAmount,
             cardNumber: numeroTarjeta.value.replace(/\s/g, ''),
-            cardholderName: nombreTarjeta.value,
-            expirationDate: fechaExpiracion.value,
-            cvv: cvv.value
+            cardName: nombreTarjeta.value,
+            cardExpiry: fechaExpiracion.value,
+            cardCVV: cvv.value
         };
 
         const formulario = document.getElementById("pagos__formulario");

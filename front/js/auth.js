@@ -9,8 +9,8 @@ const SESSION_KEY = "app.jwt";
 // Detectar entorno y fijar la URL de la API
 const authIsProd = location.hostname.endsWith("onrender.com");
 const AUTH_API_URL = authIsProd
-  ? "https://perfumeriaclemenss.onrender.com/api"
-  : (window.__API_URL__ || "http://localhost:3002/api");
+  ? "https://e-commerce-fr3k.onrender.com/api/auth"
+  : "http://localhost:8081/api/auth";
 
 // ----------------- Helpers de sesión -----------------
 function setSession(user) {
@@ -22,7 +22,10 @@ function getSession() {
   try { return JSON.parse(r); }
   catch { localStorage.removeItem(SESSION_KEY); return null; }
 }
-function clearSession() { localStorage.removeItem(SESSION_KEY); }
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem("token");
+}
 
 // ----------------- Helpers UI -----------------
 function showError(el, msg) {
@@ -114,8 +117,13 @@ function attachLoginHandler() {
     setLoading(submitBtn, true);
     try {
       const data = await apiLogin(email, password, inFlight.signal);
-      if (data?.user) {
-        setSession({ user: data.user });
+      // El backend Spring responde { token, tokenType, email, fullName, role }
+      if (data?.token) {
+        setSession({
+          token: data.token,
+          user: { name: data.fullName || data.email, email: data.email, role: data.role },
+        });
+        localStorage.setItem("token", data.token); // lo usa pagos.js
       }
       borrarCarritoLocal();
       window.location.assign(redirectTo);
