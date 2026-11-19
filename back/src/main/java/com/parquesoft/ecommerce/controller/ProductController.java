@@ -29,10 +29,7 @@ public class ProductController {
     @Operation(summary = "Listar catalogo de productos activos", description = "Acceso publico utilizado en la tienda")
     @ApiResponse(responseCode = "200", description = "Catalogo obtenido exitosamente")
     public ResponseEntity<?> getAllActiveProducts() {
-        List<ProductEntity> products = productService.getAllActiveProducts()
-                .stream()
-                .filter(p -> p.getId() != 21)  // Ignorar el producto duplicado con ID 21
-                .collect(Collectors.toList());
+        List<ProductEntity> products = productService.getAllActiveProducts();
         
         List<Map<String, Object>> response = products.stream().map(p -> {
             Map<String, Object> map = new HashMap<>();

@@ -1,15 +1,22 @@
 // Script para poblar productos1.html dinámicamente desde window.productos
 
-document.addEventListener('DOMContentLoaded', async function() {
-  // Verifica que window.productos esté disponible
-  if (!window.productos) {
-    console.error('No se encontró la lista de productos');
-    return;
+// Pinta cuando js/productos.js termine de traer los productos del backend
+// (evento 'productosListos'); si ya llegaron antes, pinta de inmediato.
+function iniciarProductosPagina() {
+  if (Array.isArray(window.productos) && window.productos.length > 0) {
+    pintarProductosPagina();
+  } else {
+    document.addEventListener('productosListos', pintarProductosPagina, { once: true });
   }
+}
 
-  if (typeof window.syncProductosConBackend === 'function') {
-    await window.syncProductosConBackend();
-  }
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', iniciarProductosPagina);
+} else {
+  iniciarProductosPagina();
+}
+
+function pintarProductosPagina() {
 
   // Selecciona los contenedores
   const contenedorElla = document.getElementById('productos-ella');
@@ -56,4 +63,4 @@ document.addEventListener('DOMContentLoaded', async function() {
   document.querySelectorAll('.btn-cart').forEach((btn, idx) => {
     // No agregar eventos, productos.html no es para vender
   });
-});
+}
