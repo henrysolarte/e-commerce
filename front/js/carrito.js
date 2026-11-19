@@ -106,7 +106,7 @@ function mostrarMensaje(texto) {
 // Actualiza el carrito automáticamente si se agrega un producto desde otra pestaña o ventana
 window.addEventListener('storage', function(e) {
   if (e.key === 'carrito') {
-    if (typeof mostrarCarrito === 'function' && window.location.pathname.includes('carrito.html')) {
+    if (typeof mostrarCarrito === 'function' && esPaginaCarrito()) {
         mostrarCarrito();
     }
     mostrarMensaje('El carrito ha sido actualizado.');
@@ -192,7 +192,13 @@ function eliminarProducto(index) {
     }
 }
 
-// Ejecutar mostrarCarrito al cargar la página del carrito
-if (window.location.pathname.includes('carrito.html')) {
-    document.addEventListener('DOMContentLoaded', mostrarCarrito);
+// La página del carrito se reconoce por su contenedor, no por la URL:
+// en Render, `serve` redirige /carrito.html a /carrito (sin .html).
+function esPaginaCarrito() {
+    return !!document.getElementById('carrito-lista');
 }
+
+// Ejecutar mostrarCarrito al cargar la página del carrito
+document.addEventListener('DOMContentLoaded', () => {
+    if (esPaginaCarrito()) mostrarCarrito();
+});
